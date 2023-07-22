@@ -4,6 +4,8 @@
 .gradle/
 build/
 
+**/bin/
+
 # Ignore gradle wrapper jar.
 gradle/wrapper/gradle-wrapper.jar
 
