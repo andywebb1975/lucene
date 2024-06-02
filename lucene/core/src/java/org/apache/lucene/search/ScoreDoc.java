@@ -34,6 +34,15 @@ public class ScoreDoc {
   /** Only set by {@link TopDocs#merge} */
   public int shardIndex;
 
+  /**
+   * Original index of the doc in the result set.
+   *
+   * Only set/used by {@link QueryRescorer#rescore} and Solr's LTRRescorer.
+   *
+   * Could shardIndex be used for this instead?
+   */
+  public int index = -1;
+
   /** Constructs a ScoreDoc. */
   public ScoreDoc(int doc, float score) {
     this(doc, score, -1);
@@ -49,6 +58,6 @@ public class ScoreDoc {
   // A convenience method for debugging.
   @Override
   public String toString() {
-    return "doc=" + doc + " score=" + score + " shardIndex=" + shardIndex;
+    return "doc=" + doc + " score=" + score + " shardIndex=" + shardIndex + " index=" + index;
   }
 }
