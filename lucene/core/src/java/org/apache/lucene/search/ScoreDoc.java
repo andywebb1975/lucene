@@ -31,7 +31,7 @@ public class ScoreDoc {
    */
   public int doc;
 
-  /** Only set by {@link TopDocs#merge} */
+  /** Only set by {@link TopDocs#merge} and {@link QueryRescorer#rescore} */
   public int shardIndex;
 
   /** Constructs a ScoreDoc. */
