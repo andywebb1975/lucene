@@ -52,6 +52,13 @@ public class ScoreDoc {
   // A convenience method for debugging.
   @Override
   public String toString() {
-    return "doc=" + doc + " score=" + score + " shardIndex=" + shardIndex + " originalIndex=" + originalIndex;
+    return "doc="
+        + doc
+        + " score="
+        + score
+        + " shardIndex="
+        + shardIndex
+        + " originalIndex="
+        + originalIndex;
   }
 }
