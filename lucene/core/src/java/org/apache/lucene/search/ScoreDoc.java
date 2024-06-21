@@ -31,8 +31,11 @@ public class ScoreDoc {
    */
   public int doc;
 
-  /** Only set by {@link TopDocs#merge} and {@link QueryRescorer#rescore} */
+  /** Only set by {@link TopDocs#merge} */
   public int shardIndex;
+
+  /** Only set by {@link QueryRescorer#rescore} */
+  public int originalIndex;
 
   /** Constructs a ScoreDoc. */
   public ScoreDoc(int doc, float score) {
@@ -49,6 +52,6 @@ public class ScoreDoc {
   // A convenience method for debugging.
   @Override
   public String toString() {
-    return "doc=" + doc + " score=" + score + " shardIndex=" + shardIndex;
+    return "doc=" + doc + " score=" + score + " shardIndex=" + shardIndex + " originalIndex=" + originalIndex;
   }
 }

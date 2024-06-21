@@ -50,10 +50,10 @@ public abstract class QueryRescorer extends Rescorer {
       throws IOException {
     ScoreDoc[] hits = firstPassTopDocs.scoreDocs.clone();
 
-    // record original index of each hit in its shardIndex
+    // record original index of each hit in its originalIndex
     // NB code below relies on hits being in docId order so the order is about to be lost
     for (int i = 0; i < hits.length; i++) {
-      hits[i].shardIndex = i;
+      hits[i].originalIndex = i;
     }
 
     Arrays.sort(
@@ -120,20 +120,17 @@ public abstract class QueryRescorer extends Rescorer {
         new Comparator<ScoreDoc>() {
           @Override
           public int compare(ScoreDoc a, ScoreDoc b) {
-            // Sort by score descending, then original order (saved in shardIndex above), then docID
-            // ascending:
+            // Sort by score descending, otherwise using original order
             if (a.score > b.score) {
               return -1;
             } else if (a.score < b.score) {
               return 1;
-            } else if (a.shardIndex > b.shardIndex) {
+            } else if (a.originalIndex > b.originalIndex) {
               return 1;
-            } else if (a.shardIndex < b.shardIndex) {
+            } else if (a.originalIndex < b.originalIndex) {
               return -1;
             } else {
-              // This subtraction can't overflow int
-              // because docIDs are >= 0:
-              return a.doc - b.doc;
+              return 0;
             }
           }
         };
