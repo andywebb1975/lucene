@@ -400,7 +400,9 @@ public class TestQueryRescorer extends LuceneTestCase {
     RandomIndexWriter w = new RandomIndexWriter(random(), dir, newIndexWriterConfig());
 
     final int[] idToNum = new int[numDocs];
-    int maxValue = TestUtil.nextInt(random(), 10, 1000000);
+    // range of values is limited so we get a same-score condition frequently - this
+    // enables the originalIndex sorting to be tested
+    int maxValue = TestUtil.nextInt(random(), 10, 50);
     for (int i = 0; i < numDocs; i++) {
 
       Document doc = new Document();
