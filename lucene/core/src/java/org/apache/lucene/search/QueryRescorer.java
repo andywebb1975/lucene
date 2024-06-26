@@ -130,6 +130,7 @@ public abstract class QueryRescorer extends Rescorer {
             } else if (a.originalIndex < b.originalIndex) {
               return -1;
             } else {
+              // this should never be reached
               return 0;
             }
           }
