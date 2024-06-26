@@ -402,17 +402,20 @@ public class TestQueryRescorer extends LuceneTestCase {
     final int[] idToNum = new int[numDocs];
     int maxValue = TestUtil.nextInt(random(), 10, 1000000);
     for (int i = 0; i < numDocs; i++) {
+
       Document doc = new Document();
       doc.add(newStringField("id", "" + i, Field.Store.YES));
+      // add "field" with random sized list of "a" chars
       int numTokens = TestUtil.nextInt(random(), 1, 10);
       StringBuilder b = new StringBuilder();
       for (int j = 0; j < numTokens; j++) {
         b.append("a ");
       }
       doc.add(newTextField("field", b.toString(), Field.Store.NO));
-      idToNum[i] = random().nextInt(maxValue);
-      doc.add(new NumericDocValuesField("num", idToNum[i]));
       w.addDocument(doc);
+
+      // generate random number for this record
+      idToNum[i] = random().nextInt(maxValue);
     }
     final IndexReader r = w.getReader();
     w.close();
@@ -422,7 +425,13 @@ public class TestQueryRescorer extends LuceneTestCase {
     boolean reverse = random().nextBoolean();
 
     // System.out.println("numHits=" + numHits + " reverse=" + reverse);
+
+    // search for "a" - score varies due to TF
     TopDocs hits = s.search(new TermQuery(new Term("field", "a")), numHits);
+
+    // for (int i = 0; i < hits.scoreDocs.length; i++) {
+    //   System.out.println(i + " " + hits.scoreDocs[i].toString());
+    // }
 
     TopDocs hits2 =
         new QueryRescorer(new FixedScoreQuery(idToNum, reverse)) {
@@ -464,9 +473,9 @@ public class TestQueryRescorer extends LuceneTestCase {
 
     boolean fail = false;
     for (int i = 0; i < numHits; i++) {
-      // System.out.println("expected=" + expected[i] + " vs " + hits2.scoreDocs[i].toString());
+      System.out.println("expected=" + expected[i] + " vs " + hits2.scoreDocs[i].toString());
       if (expected[i].intValue() != hits2.scoreDocs[i].doc) {
-        // System.out.println("  diff!");
+        System.out.println("  diff!");
         fail = true;
       }
     }
