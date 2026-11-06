@@ -18,7 +18,6 @@ package org.apache.lucene.search;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 import org.apache.lucene.index.LeafReaderContext;
 import org.apache.lucene.util.ArrayUtil;
@@ -109,32 +108,14 @@ public abstract class QueryRescorer extends Rescorer {
       hitUpto++;
     }
 
-    Comparator<ScoreDoc> sortDocComparator =
-        (a, b) -> {
-          // Sort by score descending, then docID ascending:
-          if (a.score > b.score) {
-            return -1;
-          } else if (a.score < b.score) {
-            return 1;
-          } else if (a.originalIndex > b.originalIndex) {
-            return 1;
-          } else if (a.originalIndex < b.originalIndex) {
-            return -1;
-          } else {
-            // This subtraction can't overflow int
-            // because docIDs are >= 0:
-            return a.doc - b.doc;
-          }
-        };
-
     if (topN < hits.length) {
-      ArrayUtil.select(hits, 0, hits.length, topN, sortDocComparator);
+      ArrayUtil.select(hits, 0, hits.length, topN, ScoreDoc.COMPARATOR);
       ScoreDoc[] subset = new ScoreDoc[topN];
       System.arraycopy(hits, 0, subset, 0, topN);
       hits = subset;
     }
 
-    Arrays.sort(hits, sortDocComparator);
+    Arrays.sort(hits, ScoreDoc.COMPARATOR);
 
     return new TopDocs(firstPassTopDocs.totalHits, hits);
   }

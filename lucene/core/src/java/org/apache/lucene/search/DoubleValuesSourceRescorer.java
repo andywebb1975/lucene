@@ -47,6 +47,13 @@ public abstract class DoubleValuesSourceRescorer extends Rescorer {
     DoubleValuesSource source = valuesSource.rewrite(searcher);
     // this will still alter scores, we clone to retain hits ordering in firstPassTopDocs
     ScoreDoc[] hits = firstPassTopDocs.scoreDocs.clone();
+
+    // record original index of each hit in its originalIndex
+    // NB code below relies on hits being in docId order so the order is about to be lost
+    for (int i = 0; i < hits.length; i++) {
+      hits[i].originalIndex = i;
+    }
+    
     Arrays.sort(hits, (a, b) -> a.doc - b.doc);
 
     List<LeafReaderContext> leaves = searcher.getIndexReader().leaves();

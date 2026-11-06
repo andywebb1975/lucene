@@ -35,7 +35,7 @@ public class ScoreDoc {
   /** Only set by {@link TopDocs#merge} */
   public int shardIndex;
 
-  /** Only set by {@link QueryRescorer#rescore} */
+  /** Only set by {@link QueryRescorer#rescore} and {@link DoubleValuesSourceRescorer#rescore} */
   public int originalIndex;
 
   /** Constructs a ScoreDoc. */
@@ -70,6 +70,10 @@ public class ScoreDoc {
           return -1;
         } else if (a.score < b.score) {
           return 1;
+        } else if (a.originalIndex > b.originalIndex) {
+          return 1;
+        } else if (a.originalIndex < b.originalIndex) {
+          return -1;
         } else {
           return a.doc - b.doc;
         }
